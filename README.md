@@ -5,61 +5,92 @@
 <title>เกมฝึกออกเสียงคำศัพท์</title>
 
 <style>
+/* พื้นหลังไล่สี */
 body {
-    font-family: sans-serif;
-    background-color: #e9e9ef;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: linear-gradient(135deg, #a18cd1, #6dd5ed, #fbc2eb);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+}
+
+/* กล่องเกม */
+.container {
+    background: white;
+    padding: 50px 60px;
+    border-radius: 25px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.15);
     text-align: center;
-    padding-top: 80px;
+    width: 420px;
+    animation: fadeIn 0.6s ease;
+}
+
+@keyframes fadeIn {
+    from {opacity:0; transform: translateY(30px);}
+    to {opacity:1; transform: translateY(0);}
 }
 
 h1 {
-    font-size: 36px;
-    margin-bottom: 30px;
+    color: #6a5acd;
+    margin-bottom: 25px;
 }
 
+/* คำศัพท์ */
 #word {
-    font-size: 48px;
-    color: #0d6efd;
+    font-size: 54px;
+    font-weight: bold;
+    color: #009dff;
     margin: 20px 0;
 }
 
+/* สถานะ */
 #status {
-    font-size: 24px;
+    font-size: 26px;
     font-weight: bold;
-    margin: 15px 0;
+    min-height: 35px;
 }
 
+/* คะแนน */
 #score {
     font-size: 22px;
-    margin: 10px 0 20px;
+    margin: 15px 0 25px;
+    color: #444;
 }
 
+/* ปุ่ม */
 button {
-    padding: 10px 25px;
+    padding: 12px 28px;
     font-size: 18px;
     border: none;
-    border-radius: 8px;
-    background-color: #0d6efd;
+    border-radius: 12px;
+    background: linear-gradient(45deg,#7f7fd5,#86a8e7,#91eae4);
     color: white;
     cursor: pointer;
+    transition: 0.25s;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
 }
 
 button:hover {
-    background-color: #0b5ed7;
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.25);
 }
 </style>
 </head>
 
 <body>
 
-<h1>ตรวจจับเสียงพูดคำภาษาไทย</h1>
+<div class="container">
+    <h1>ตรวจจับเสียงพูดคำภาษาไทย</h1>
 
-<h2 id="word">กิ่ง</h2>
-<p id="status"></p>
-<p id="score">คะแนน: 0</p>
+    <div id="word">กิ่ง</div>
+    <div id="status"></div>
+    <div id="score">คะแนน: 0</div>
 
-<button id="startButton">เริ่มฟังเสียง</button>
-<button id="nextButton" style="display:none;">คำถัดไป</button>
+    <button id="startButton">เริ่มฟังเสียง</button>
+    <button id="nextButton" style="display:none;">คำถัดไป</button>
+</div>
 
 <script>
 const words = ["กิ่ง","ยอด","ลำต้น","ราก","ต้นกล้า","หน่อ","เนื้อเยื่อ","เมล็ด","ขยายพันธุ์","ตอนกิ่ง"];
@@ -78,12 +109,10 @@ if (!('webkitSpeechRecognition' in window)) {
 } else {
 
     const recognition = new webkitSpeechRecognition();
-    recognition.continuous = false;
-    recognition.interimResults = false;
     recognition.lang = 'th-TH';
 
     startButton.addEventListener('click', () => {
-        statusElement.style.color = "black";
+        statusElement.style.color = "#333";
         statusElement.textContent = "กำลังฟังเสียง...";
         recognition.start();
     });
@@ -93,12 +122,12 @@ if (!('webkitSpeechRecognition' in window)) {
 
         if (spokenWord === words[currentIndex]) {
             statusElement.textContent = "ถูกต้อง!";
-            statusElement.style.color = "green";
+            statusElement.style.color = "#28a745";
             score++;
             scoreElement.textContent = `คะแนน: ${score}`;
         } else {
             statusElement.textContent = "ผิด!";
-            statusElement.style.color = "red";
+            statusElement.style.color = "#e63946";
         }
 
         startButton.style.display = "none";
@@ -114,8 +143,9 @@ if (!('webkitSpeechRecognition' in window)) {
             startButton.style.display = "inline-block";
             nextButton.style.display = "none";
         } else {
-            wordElement.textContent = "";
-            statusElement.textContent = `เสร็จสิ้น! คะแนนรวมของคุณคือ: ${score} จาก ${words.length}`;
+            wordElement.textContent = "จบเกม!";
+            statusElement.textContent = `คะแนนรวม ${score} / ${words.length}`;
+            statusElement.style.color = "#6a5acd";
             nextButton.style.display = "none";
         }
     });
